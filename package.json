@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "name": "learn-wat-wasm",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "build": "wat-wasm AddInt.wat && wat-wasm HelloWorld.wat"
+  },
+  "dependencies": {
+    "wat-wasm": "^1.0.43"
+  }
+}

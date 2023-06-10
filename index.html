@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <script type="module">
+            // get args via query string
+            const args = location.search ? location.search.substring(1).split(',') : [];
+
+
+
+            /* const watProm = fetch("AddInt.wasm");
+            const obj = await WebAssembly.instantiateStreaming(watProm);
+
+            const [a, b] = args.map(s => parseInt(s, 10));
+            console.log('args:', [a, b]);
+            const { AddInt } =  obj.instance.exports;
+            const c = AddInt(a, b);
+            console.log('result:', c); */
+
+            
+
+            const memory = new WebAssembly.Memory ({ initial: 1 });
+
+            const importObject = {
+                env: {
+                    buffer: memory,
+                    startStringIndex: 100,
+                    PrintString: (startStrIdx, strLen) => {
+                        const bytes = new Uint8Array(memory.buffer, startStrIdx, strLen);
+                        const strToLog = new TextDecoder('utf8').decode(bytes);
+                        console.log(strToLog);
+                    }
+                }
+            };
+
+            const watProm = fetch("HelloWorld.wasm");
+            const obj = await WebAssembly.instantiateStreaming(watProm, importObject);
+
+            const { HelloWorld } = obj.instance.exports;
+            HelloWorld();
+
+
+
+            /* const memory = new WebAssembly.Memory({ initial: 10, maximum: 100 });
+            new Uint32Array(memory.buffer)[0] = 42;
+            memory.grow(1); */
+        </script>
+    </body>
+</html>
