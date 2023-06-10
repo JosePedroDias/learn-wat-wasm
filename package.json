@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
-    "build": "wat-wasm AddInt.wat && wat-wasm HelloWorld.wat"
+    "build": "wat-wasm AddInt.wat && wat-wasm HelloWorld.wat && wat-wasm ForLoop.wat",
+    "b": "wat-wasm ForLoop.wat"
   },
   "dependencies": {
     "wat-wasm": "^1.0.43"

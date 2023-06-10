@@ -1,6 +1,7 @@
 <html>
     <head>
         <meta charset="utf-8">
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     </head>
     <body>
         <script type="module">
@@ -15,12 +16,15 @@
             const [a, b] = args.map(s => parseInt(s, 10));
             console.log('args:', [a, b]);
             const { AddInt } =  obj.instance.exports;
+            if (isNaN(a) || isNaN(b)) {
+                throw new Error('needs 2 integer numbers passed in as query string arguments!');
+            }
             const c = AddInt(a, b);
             console.log('result:', c); */
 
             
 
-            const memory = new WebAssembly.Memory ({ initial: 1 });
+            /* const memory = new WebAssembly.Memory ({ initial: 1 });
 
             const importObject = {
                 env: {
@@ -38,13 +42,27 @@
             const obj = await WebAssembly.instantiateStreaming(watProm, importObject);
 
             const { HelloWorld } = obj.instance.exports;
-            HelloWorld();
+            HelloWorld(); */
 
 
 
-            /* const memory = new WebAssembly.Memory({ initial: 10, maximum: 100 });
-            new Uint32Array(memory.buffer)[0] = 42;
-            memory.grow(1); */
+            const importObject = {
+                env: {
+                    PrintI32: (numI32) => {
+                        console.log(numI32);
+                    }
+                }
+            };
+
+            const watProm = fetch("ForLoop.wasm");
+            const obj = await WebAssembly.instantiateStreaming(watProm, importObject);
+
+            const { ForLoop } =  obj.instance.exports;
+            const [startNum, endNum] = args.map(s => parseInt(s, 10));
+            if (isNaN(startNum) || isNaN(endNum)) {
+                throw new Error('needs 2 integer numbers passed in as query string arguments!');
+            }
+            ForLoop(startNum, endNum);
         </script>
     </body>
 </html>
