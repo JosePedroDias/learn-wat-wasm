@@ -75,13 +75,24 @@ if (wasmFile === 'AddInt.wasm') {
         const obj = await WebAssembly.instantiate(watBuf);
 
         const { IsPrime } =  obj.instance.exports;
-        const [n] = args.map(s => parseInt(s, 10));
+        const n = parseInt(args[0], 10);
         if (isNaN(n)) {
             throw new Error('needs 1 integer number passed in as a cli argument!');
         }
         // const isEven = Boolean( EvenCheck(n) ); console.log('is even?', isEven);
         // const mc = Boolean( MultipleCheck(n, m) ); console.log(n, m, 'is multiple?', mc);
+        console.time('Prime.wasm');
         const isP = Boolean( IsPrime(n) ); console.log(n, 'is prime?', isP);
+        console.timeEnd('Prime.wasm');
+    }
+} else if (wasmFile === 'Prime.mjs') {
+    {
+        const mod = await import('./Prime.mjs');
+        const { Prime } = mod;
+        const n = parseInt(args[0], 10);
+        console.time('Prime.mjs');
+        const isP = Prime(n); console.log(n, 'is prime?', isP);
+        console.timeEnd('Prime.mjs');
     }
 } else {
     console.log('expects the wasm file to be provided, followed by the arguments to pass to it');

@@ -58,8 +58,11 @@ The examples section below should make this clearer.
     http://localhost:8080/?ForLoop.wasm,3,9  
     `node index.mjs ForLoop.wasm 3 9`
 - **Prime** (p. 84) - tests whether a number is prime. uses auxiliary functions
-    http://localhost:8080/?Prime.wasm,5  
-    `node index.mjs Prime.wasm 5`
+    http://localhost:8080/?Prime.wasm,9991249  
+    `node index.mjs Prime.wasm 9991249`  
+    I wrote the JS counterpart to the same algorithm and timed the two. On my M1 it performs roughly 70x faster with WASM.
+    http://localhost:8080/?Prime.mjs,9991249  
+    `node index.mjs Prime.mjs 9991249`
 
 
 ## reference
