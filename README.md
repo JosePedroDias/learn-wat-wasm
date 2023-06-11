@@ -13,6 +13,7 @@ Run it in node.js with `index.mjs` or in the browser by serving a web page from 
 - AddInt (p.28, p.32) - sums two 32-bit numbers
 - HelloWorld (p.44) - sets a string into a memory buffer and calls a JS function to print the string via console.log
 - ForLoop (original code) - does a loop between start and end, logging numbers in between
+- Prime (p. 84) - tests whether a number is prime. uses auxiliary functions
 
 
 ## reference

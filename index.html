@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8">
@@ -46,7 +47,7 @@
 
 
 
-            const importObject = {
+            /* const importObject = {
                 env: {
                     PrintI32: (numI32) => {
                         console.log(numI32);
@@ -62,7 +63,24 @@
             if (isNaN(startNum) || isNaN(endNum)) {
                 throw new Error('needs 2 integer numbers passed in as query string arguments!');
             }
-            ForLoop(startNum, endNum);
+            ForLoop(startNum, endNum); */
+
+
+
+            const importObject = {};
+
+            const watProm = fetch("Prime.wasm");
+            const obj = await WebAssembly.instantiateStreaming(watProm, importObject);
+
+            const { IsPrime } =  obj.instance.exports;
+            const [n] = args.map(s => parseInt(s, 10));
+            if (isNaN(n)) {
+                throw new Error('needs 1 integer number passed in as query string argument!');
+            }
+            // const isEven = Boolean( EvenCheck(n) ); console.log('is even?', isEven);
+            // const eq2 = Boolean( Eq2(n) ); console.log('is 2?', eq2);
+            // const mc = Boolean( MultipleCheck(n, m) ); console.log(n, m, 'is multiple?', mc);
+            const isP = Boolean( IsPrime(n) ); console.log(n, 'is prime?', isP);
         </script>
     </body>
 </html>

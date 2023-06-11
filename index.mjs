@@ -46,7 +46,7 @@ HelloWorld(); */
 
 
 
-const importObject = {
+/* const importObject = {
     env: {
         PrintI32: (numI32) => {
             console.log(numI32);
@@ -63,4 +63,21 @@ if (isNaN(startNum) || isNaN(endNum)) {
     console.log('needs 2 integer numbers passed in as cli arguments!');
     process.exit(1);
 }
-ForLoop(startNum, endNum);
+ForLoop(startNum, endNum); */
+
+
+
+const importObject = {};
+
+const watBuf = await readFile('Prime.wasm');
+const obj = await WebAssembly.instantiate(watBuf, importObject);
+
+const { IsPrime } =  obj.instance.exports;
+const [n] = args.map(s => parseInt(s, 10));
+if (isNaN(n)) {
+    throw new Error('needs 1 integer number passed in as a cli argument!');
+}
+// const isEven = Boolean( EvenCheck(n) ); console.log('is even?', isEven);
+// const eq2 = Boolean( Eq2(n) ); console.log('is 2?', eq2);
+// const mc = Boolean( MultipleCheck(n, m) ); console.log(n, m, 'is multiple?', mc);
+const isP = Boolean( IsPrime(n) ); console.log(n, 'is prime?', isP);
