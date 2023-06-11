@@ -3,17 +3,10 @@
         (param $n i32)
         (result i32)
 
-        (i32.eq
-            (i32.const 0)
+        (i32.eq ;; n % 2 === 0
             (i32.rem_u (local.get $n) (i32.const 2))
+            (i32.const 0)
         )
-    )
-
-    (func $eq2
-        (param $n i32)
-        (result i32)
-
-        (i32.eq (local.get $n) (i32.const 2))
     )
 
     (func $multiple_check
@@ -21,9 +14,9 @@
         (param $m i32)
         (result i32)
 
-        (i32.eq
-            (i32.const 0)
+        (i32.eq ;; n % m === 0
             (i32.rem_u (local.get $n) (local.get $m))
+            (i32.const 0)
         )
     )
 
@@ -36,7 +29,7 @@
         (if (i32.eq (local.get $n) (i32.const 1)) ;; if n === 1 => false
             (then (return (i32.const 0))))
 
-        (if (call $eq2 (local.get $n)) ;; if n === 2 => true
+        (if (i32.eq (local.get $n) (i32.const 2)) ;; if n === 2 => true
             (then (return (i32.const 1))))
 
         (block $not_prime
@@ -59,7 +52,6 @@
     )
 
     ;; (export "EvenCheck" (func $even_check))
-    ;; (export "Eq2" (func $eq2))
     ;; (export "MultipleCheck" (func $multiple_check))
     (export "IsPrime" (func $is_prime))
 )

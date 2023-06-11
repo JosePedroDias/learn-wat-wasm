@@ -80,7 +80,6 @@ if (wasmFile === 'AddInt.wasm') {
             throw new Error('needs 1 integer number passed in as a cli argument!');
         }
         // const isEven = Boolean( EvenCheck(n) ); console.log('is even?', isEven);
-        // const eq2 = Boolean( Eq2(n) ); console.log('is 2?', eq2);
         // const mc = Boolean( MultipleCheck(n, m) ); console.log(n, m, 'is multiple?', mc);
         const isP = Boolean( IsPrime(n) ); console.log(n, 'is prime?', isP);
     }
