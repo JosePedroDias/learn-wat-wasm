@@ -9,78 +9,84 @@
             // get args via query string
             const args = location.search ? location.search.substring(1).split(',') : [];
 
+            const wasmFile = args.shift();
 
+            console.log(`wasmFile file: ${wasmFile}`);
+            console.log('args:', args);
 
-            /* const watProm = fetch("AddInt.wasm");
-            const obj = await WebAssembly.instantiateStreaming(watProm);
+            if (wasmFile === 'AddInt.wasm') {
+                {
+                    const watProm = fetch("AddInt.wasm");
+                    const obj = await WebAssembly.instantiateStreaming(watProm);
 
-            const [a, b] = args.map(s => parseInt(s, 10));
-            console.log('args:', [a, b]);
-            const { AddInt } =  obj.instance.exports;
-            if (isNaN(a) || isNaN(b)) {
-                throw new Error('needs 2 integer numbers passed in as query string arguments!');
-            }
-            const c = AddInt(a, b);
-            console.log('result:', c); */
-
-            
-
-            /* const memory = new WebAssembly.Memory ({ initial: 1 });
-
-            const importObject = {
-                env: {
-                    buffer: memory,
-                    startStringIndex: 100,
-                    PrintString: (startStrIdx, strLen) => {
-                        const bytes = new Uint8Array(memory.buffer, startStrIdx, strLen);
-                        const strToLog = new TextDecoder('utf8').decode(bytes);
-                        console.log(strToLog);
+                    const [a, b] = args.map(s => parseInt(s, 10));
+                    const { AddInt } =  obj.instance.exports;
+                    if (isNaN(a) || isNaN(b)) {
+                        throw new Error('needs 2 integer numbers passed in as query string arguments!');
                     }
+                    const c = AddInt(a, b);
+                    console.log('result:', c);
                 }
-            };
+            } else if (wasmFile === 'HelloWorld.wasm') {
+                {
+                    const memory = new WebAssembly.Memory ({ initial: 1 });
 
-            const watProm = fetch("HelloWorld.wasm");
-            const obj = await WebAssembly.instantiateStreaming(watProm, importObject);
+                    const importObject = {
+                        env: {
+                            buffer: memory,
+                            startStringIndex: 100,
+                            PrintString: (startStrIdx, strLen) => {
+                                const bytes = new Uint8Array(memory.buffer, startStrIdx, strLen);
+                                const strToLog = new TextDecoder('utf8').decode(bytes);
+                                console.log(strToLog);
+                            }
+                        }
+                    };
 
-            const { HelloWorld } = obj.instance.exports;
-            HelloWorld(); */
+                    const watProm = fetch("HelloWorld.wasm");
+                    const obj = await WebAssembly.instantiateStreaming(watProm, importObject);
 
+                    const { HelloWorld } = obj.instance.exports;
+                    HelloWorld();
+                }
+            } else if (wasmFile === 'ForLoop.wasm') {
+                {
+                    const importObject = {
+                        env: {
+                            PrintI32: (numI32) => {
+                                console.log(numI32);
+                            }
+                        }
+                    };
 
+                    const watProm = fetch("ForLoop.wasm");
+                    const obj = await WebAssembly.instantiateStreaming(watProm, importObject);
 
-            /* const importObject = {
-                env: {
-                    PrintI32: (numI32) => {
-                        console.log(numI32);
+                    const { ForLoop } =  obj.instance.exports;
+                    const [startNum, endNum] = args.map(s => parseInt(s, 10));
+                    if (isNaN(startNum) || isNaN(endNum)) {
+                        throw new Error('needs 2 integer numbers passed in as query string arguments!');
                     }
+                    ForLoop(startNum, endNum);
                 }
-            };
+            } else if (wasmFile === 'Prime.wasm') {
+                {
+                    const watProm = fetch("Prime.wasm");
+                    const obj = await WebAssembly.instantiateStreaming(watProm);
 
-            const watProm = fetch("ForLoop.wasm");
-            const obj = await WebAssembly.instantiateStreaming(watProm, importObject);
-
-            const { ForLoop } =  obj.instance.exports;
-            const [startNum, endNum] = args.map(s => parseInt(s, 10));
-            if (isNaN(startNum) || isNaN(endNum)) {
-                throw new Error('needs 2 integer numbers passed in as query string arguments!');
+                    const { IsPrime } =  obj.instance.exports;
+                    const [n] = args.map(s => parseInt(s, 10));
+                    if (isNaN(n)) {
+                        throw new Error('needs 1 integer number passed in as query string argument!');
+                    }
+                    // const isEven = Boolean( EvenCheck(n) ); console.log('is even?', isEven);
+                    // const eq2 = Boolean( Eq2(n) ); console.log('is 2?', eq2);
+                    // const mc = Boolean( MultipleCheck(n, m) ); console.log(n, m, 'is multiple?', mc);
+                    const isP = Boolean( IsPrime(n) ); console.log(n, 'is prime?', isP);
+                }
+            } else {
+                alert('expects the wasm file to be provided, followed by the arguments to pass to it');
             }
-            ForLoop(startNum, endNum); */
-
-
-
-            const importObject = {};
-
-            const watProm = fetch("Prime.wasm");
-            const obj = await WebAssembly.instantiateStreaming(watProm, importObject);
-
-            const { IsPrime } =  obj.instance.exports;
-            const [n] = args.map(s => parseInt(s, 10));
-            if (isNaN(n)) {
-                throw new Error('needs 1 integer number passed in as query string argument!');
-            }
-            // const isEven = Boolean( EvenCheck(n) ); console.log('is even?', isEven);
-            // const eq2 = Boolean( Eq2(n) ); console.log('is 2?', eq2);
-            // const mc = Boolean( MultipleCheck(n, m) ); console.log(n, m, 'is multiple?', mc);
-            const isP = Boolean( IsPrime(n) ); console.log(n, 'is prime?', isP);
         </script>
     </body>
 </html>

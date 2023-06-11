@@ -1,19 +1,65 @@
-# learn WAT WASM
+# Learn WAT WASM !
 
 All WAT code so far is either copied from the book or heavily inspired by it.
 Wasm-loading code was updated to latest node.js and browser APIs.
 
-To generate WASM files out of WAT, do `npm install && npm build`.
+## Setting up your toolchain
 
-Run it in node.js with `index.mjs` or in the browser by serving a web page from `index.html`.
+### with wat-wasm
+
+If you want to use the simpler to install `wat-wasm` tool, do
+
+    npm install
+
+    npx wat-wasm <wat file name>
+
+### with wabt
+
+If you prefer the `wabt` tools. Besides being faster, the debug-tools switch keeps the original symbol names, very helpful for debugging:
+
+    git clone --recursive https://github.com/WebAssembly/wabt
+    cd wabt
+    git submodule update --init
+    mkdir build
+    cd build
+    cmake ..
+    cmake --build .
+
+    wabt/build/wat2wasm --debug-names <wat file name>
+
+edit the `build.mjs` script to target the toolset of choice (`COMMAND constant`)
+
+
+## generating wasm from wat
+
+Then to build all wat files do `./build.mjs`
+Then to build 1 wat file do `./build.mjs <wat file name>`
+
+
+## running the wasm file
+
+To run an example on the browser, setup a local web server (`npm run host`) so it hosts this directory (index.html and all the wasm files)
+and pass on the relevant parameters in the query string.
+
+To run an example on node.js, use the `index.mjs`, passing the parameters as cli arguments.
+
+The examples section below should make this clearer.
 
 
 ## examples
 
-- AddInt (p.28, p.32) - sums two 32-bit numbers
-- HelloWorld (p.44) - sets a string into a memory buffer and calls a JS function to print the string via console.log
-- ForLoop (original code) - does a loop between start and end, logging numbers in between
-- Prime (p. 84) - tests whether a number is prime. uses auxiliary functions
+- **AddInt** (p.28, p.32) - sums two 32-bit numbers  
+    http://localhost:8080/?AddInt.wasm,9,33  
+    `node index.mjs AddInt.wasm 9 33`
+- **HelloWorld** (p.44) - sets a string into a memory buffer and calls a JS function to print the string via console.log
+    http://localhost:8080/?HelloWorld.wasm  
+    `node index.mjs HelloWorld.wasm`
+- **ForLoop** (original code) - does a loop between start and end, logging numbers in between
+    http://localhost:8080/?ForLoop.wasm,3,9  
+    `node index.mjs ForLoop.wasm 3 9`
+- **Prime** (p. 84) - tests whether a number is prime. uses auxiliary functions
+    http://localhost:8080/?Prime.wasm,5  
+    `node index.mjs Prime.wasm 5`
 
 
 ## reference
@@ -35,6 +81,9 @@ Run it in node.js with `index.mjs` or in the browser by serving a web page from 
 ## tools
 
 - https://www.npmjs.com/package/wat-wasm https://wasmbook.com/wat-wasm.html
+
+- https://github.com/WebAssembly/wabt
+
 - https://marketplace.visualstudio.com/items?itemName=dtsvet.vscode-wasm
 
 

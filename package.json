@@ -4,10 +4,11 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
-    "build": "wat-wasm AddInt.wat && wat-wasm HelloWorld.wat && wat-wasm ForLoop.wat && wat-wasm ForLoop2.wat && wat-wasm Prime.wat",
-    "b": "wat-wasm Prime.wat"
+    "build": "./build.mjs",
+    "host": "http-server -p 8080 -c-1 --cors"
   },
-  "dependencies": {
-    "wat-wasm": "^1.0.43"
+  "devDependencies": {
+    "wat-wasm": "^1.0.43",
+    "http-server": "^14.1.1"
   }
 }
