@@ -93,6 +93,8 @@ The examples section below should make this clearer.
 
 - https://github.com/WebAssembly/wabt
 
+- https://webassembly.js.org/ https://github.com/xtuc/webassemblyjs (haven't tested yet)
+
 - https://marketplace.visualstudio.com/items?itemName=dtsvet.vscode-wasm
 
 
@@ -284,3 +286,9 @@ If we want a loop not to be infinite, we have to place its branching logic insid
 
 There's also `br_table` but it has an ugly syntax and only pays off above ~~ 12 branches.
 https://musteresel.github.io/posts/2020/01/webassembly-text-br_table-example.html
+
+
+### author's auxiliary resources
+
+- https://wasmbook.com/calculator.html
+- https://wasmbook.com/binary_float.html
