@@ -143,6 +143,16 @@ if (wasmFile === 'AddInt.wasm') {
         wasm_import_test();
         console.timeEnd('wasm_import');
     }
+} else if (wasmFile === 'BigIntI64.wasm') {
+    {
+        const watBuf = await readFile('BigIntI64.wasm');
+        const obj = await WebAssembly.instantiate(watBuf);
+
+        const [a, b] = args.map(s => BigInt(s));
+        const { AddBigInts } =  obj.instance.exports;
+        const c = AddBigInts(a, b);
+        console.log('result:', c);
+    }
 } else {
     console.log('expects the wasm file to be provided, followed by the arguments to pass to it');
 }
