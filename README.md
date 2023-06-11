@@ -63,6 +63,9 @@ The examples section below should make this clearer.
     I wrote the JS counterpart to the same algorithm and timed the two. On my M1 it performs roughly 70x faster with WASM.
     http://localhost:8080/?Prime.mjs,9991249  
     `node index.mjs Prime.mjs 9991249`
+- **TableTest** (p. 108) - uses tables to assign and use function pointers. tests performance of calling wasm fns and js fns
+    http://localhost:8080/?TableTest.wasm  
+    `node index.mjs TableTest.wasm`
 
 
 ## reference

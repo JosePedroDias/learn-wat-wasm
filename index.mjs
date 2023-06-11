@@ -94,6 +94,55 @@ if (wasmFile === 'AddInt.wasm') {
         const isP = Prime(n); console.log(n, 'is prime?', isP);
         console.timeEnd('Prime.mjs');
     }
+} else if (wasmFile === 'TableTest.wasm') {
+    {
+        let i;
+        const increment = () => ++i;
+        const decrement = () => --i;
+
+        const importObject = {
+            js: {
+                increment,
+                decrement,
+                tbl: undefined, // set by TableExport.wasm
+                wasm_increment: undefined, // set by TableExport.wasm
+                wasm_decrement: undefined // set by TableExport.wasm
+            }
+        };
+        
+        const watBufExport = await readFile('TableExport.wasm');
+        const objExport = await WebAssembly.instantiate(watBufExport, importObject);
+
+        importObject.js.tbl = objExport.instance.exports.tbl;
+        importObject.js.wasm_increment = objExport.instance.exports.increment;
+        importObject.js.wasm_decrement = objExport.instance.exports.decrement;
+
+        const watBufTest = await readFile('TableTest.wasm');
+        const objTest = await WebAssembly.instantiate(watBufTest, importObject);
+
+        const { js_table_test, js_import_test,
+            wasm_table_test, wasm_import_test } =  objTest.instance.exports;
+        
+        i = 0;
+        console.time('js_table');
+        js_table_test();
+        console.timeEnd('js_table');
+
+        i = 0;
+        console.time('js_import');
+        js_import_test();
+        console.timeEnd('js_import');
+
+        i = 0;
+        console.time('wasm_table');
+        wasm_table_test();
+        console.timeEnd('wasm_table');
+
+        i = 0;
+        console.time('wasm_import');
+        wasm_import_test();
+        console.timeEnd('wasm_import');
+    }
 } else {
     console.log('expects the wasm file to be provided, followed by the arguments to pass to it');
 }
