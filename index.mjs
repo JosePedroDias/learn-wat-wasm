@@ -153,7 +153,7 @@ if (wasmFile === 'AddInt.wasm') {
         const c = AddBigInts(a, b);
         console.log('result:', c);
     }
-} else if (wasmFile === 'StringsLength.wasm') {
+} else if (wasmFile === 'Strings.wasm') {
     {
         const memory = new WebAssembly.Memory ({ initial: 1 });
 
@@ -164,11 +164,17 @@ if (wasmFile === 'AddInt.wasm') {
                     const bytes = new Uint8Array(memory.buffer, startStrIdx, strLen);
                     const strToLog = new TextDecoder('utf8').decode(bytes);
                     console.log(`[${strToLog}]`);
+                },
+                str_pos_len_prefixed: (startStrIdx) => {
+                    const strLen = new Uint8Array(memory.buffer, startStrIdx, 1)[0];
+                    const bytes = new Uint8Array(memory.buffer, startStrIdx+1, strLen);
+                    const strToLog = new TextDecoder('utf8').decode(bytes);
+                    console.log(`[${strToLog}]`);
                 }
             }
         };
 
-        const watBuf = await readFile('StringsLength.wasm');
+        const watBuf = await readFile('Strings.wasm');
         const obj = await WebAssembly.instantiate(watBuf, importObject);
 
         const { main } =  obj.instance.exports;
@@ -203,28 +209,6 @@ if (wasmFile === 'AddInt.wasm') {
 
         console.log(readNullTerminatedString(bytes, 0)); // 1st string
         console.log(readNullTerminatedString(bytes, 32)); // 2nd string
-    }
-} else if (wasmFile === 'StringsLengthPrefixed.wasm') {
-    {
-        const memory = new WebAssembly.Memory ({ initial: 1 });
-
-        const importObject = {
-            env: {
-                buffer: memory,
-                str_pos_len: (startStrIdx) => {
-                    const strLen = new Uint8Array(memory.buffer, startStrIdx, 1)[0];
-                    const bytes = new Uint8Array(memory.buffer, startStrIdx+1, strLen);
-                    const strToLog = new TextDecoder('utf8').decode(bytes);
-                    console.log(`[${strToLog}]`);
-                }
-            }
-        };
-
-        const watBuf = await readFile('StringsLengthPrefixed.wasm');
-        const obj = await WebAssembly.instantiate(watBuf, importObject);
-
-        const { main } =  obj.instance.exports;
-        main();
     }
 } else {
     console.log('expects the wasm file to be provided, followed by the arguments to pass to it');
