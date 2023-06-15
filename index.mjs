@@ -189,6 +189,42 @@ if (wasmFile === 'AddInt.wasm') {
         console.log(chars(bytes, 32, 35)); // 2nd string
 
         console.log(chars(bytes, 0, 70)); // we can also see 2 0ed bytes between the strings and after the 2nd one ends
+
+        const readNullTerminatedString = (bytes, idx) => {
+            let s = '';
+            while (true) {
+                const u8 = bytes[idx];
+                if (u8 === 0) return s;
+                const utf8Char = String.fromCharCode(u8);
+                s += utf8Char;
+                ++idx;
+            }
+        }
+
+        console.log(readNullTerminatedString(bytes, 0)); // 1st string
+        console.log(readNullTerminatedString(bytes, 32)); // 2nd string
+    }
+} else if (wasmFile === 'StringsLengthPrefixed.wasm') {
+    {
+        const memory = new WebAssembly.Memory ({ initial: 1 });
+
+        const importObject = {
+            env: {
+                buffer: memory,
+                str_pos_len: (startStrIdx) => {
+                    const strLen = new Uint8Array(memory.buffer, startStrIdx, 1)[0];
+                    const bytes = new Uint8Array(memory.buffer, startStrIdx+1, strLen);
+                    const strToLog = new TextDecoder('utf8').decode(bytes);
+                    console.log(`[${strToLog}]`);
+                }
+            }
+        };
+
+        const watBuf = await readFile('StringsLengthPrefixed.wasm');
+        const obj = await WebAssembly.instantiate(watBuf, importObject);
+
+        const { main } =  obj.instance.exports;
+        main();
     }
 } else {
     console.log('expects the wasm file to be provided, followed by the arguments to pass to it');

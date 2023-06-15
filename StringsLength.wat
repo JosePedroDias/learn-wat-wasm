@@ -1,6 +1,4 @@
 (module
-    ;; 
-
     (import "env" "str_pos_len" (func $str_pos_len (param i32 i32)))
     (import "env" "buffer" (memory 1))
 
