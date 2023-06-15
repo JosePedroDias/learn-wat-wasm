@@ -69,6 +69,9 @@ The examples section below should make this clearer.
 - **BigIntI64** (original code) - sums 2 i64 numbers in wasm. receives and returns BigInts
     http://localhost:8080/?BigIntI64.wasm,99999999999,44  
     `node index.mjs BigIntI64.wasm 99999999999 44`
+- **StringsLength** (original code) - records strings in memory and their length is passed too
+    http://localhost:8080/?StringsLength.wasm  
+    `node index.mjs StringsLength.wasm`
 
 
 ## reference

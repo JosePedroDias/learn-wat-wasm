@@ -153,6 +153,43 @@
                     const c = AddBigInts(a, b);
                     console.log('result:', c);
                 }
+            } else if (wasmFile === 'StringsLength.wasm') {
+                {
+                    const memory = new WebAssembly.Memory ({ initial: 1 });
+
+                    const importObject = {
+                        env: {
+                            buffer: memory,
+                            str_pos_len: (startStrIdx, strLen) => {
+                                const bytes = new Uint8Array(memory.buffer, startStrIdx, strLen);
+                                const strToLog = new TextDecoder('utf8').decode(bytes);
+                                console.log(`[${strToLog}]`);
+                            }
+                        }
+                    };
+
+                    const watProm = fetch("StringsLength.wasm");
+                    const obj = await WebAssembly.instantiateStreaming(watProm, importObject);
+
+                    const { main } =  obj.instance.exports;
+                    main();
+
+                    const bytes = new Uint8Array( memory.buffer );
+
+                    const char = (bytes, idx) => String.fromCharCode(bytes[idx]);
+                    const chars = (bytes, idx, len) => Array.from( bytes.slice(idx, idx + len) )
+                    .map(u8 => u8 ? String.fromCharCode(u8) : '◆') // to make char 0 visible
+                    .join('');
+
+                    console.log('bytes', bytes);
+
+                    console.log(char(bytes, 0));
+                    console.log(chars(bytes, 0, 30)); // 1st string
+
+                    console.log(chars(bytes, 32, 35)); // 2nd string
+
+                    console.log(chars(bytes, 0, 70)); // we can also see 2 0ed bytes between the strings and after the 2nd one ends
+                }
             } else {
                 alert('expects the wasm file to be provided, followed by the arguments to pass to it');
             }
