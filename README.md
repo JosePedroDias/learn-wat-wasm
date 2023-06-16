@@ -72,7 +72,7 @@ The examples section below should make this clearer.
 - **Strings** (p. 138) - records strings in memory and their length is passed too. also exercises null terminated strings.
     http://localhost:8080/?Strings.wasm  
     `node index.mjs Strings.wasm`
-- **NumberString** (p. 161) - converts unsigned i32 to a string
+- **NumberString** (p. 173) - converts unsigned i32 to a string - both decimal, hex and binary versions
     http://localhost:8080/?NumberString.wasm,231  
     `node index.mjs NumberString.wasm 231`
 
