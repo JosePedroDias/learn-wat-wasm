@@ -178,6 +178,7 @@
                     const obj = await WebAssembly.instantiateStreaming(watProm, importObject);
 
                     const { main } =  obj.instance.exports;
+                    debugger;
                     main();
 
                     const bytes = new Uint8Array( memory.buffer );
@@ -189,12 +190,26 @@
 
                     console.log('bytes', bytes);
 
-                    console.log(char(bytes, 0));
+                   console.log(char(bytes, 0));
                     console.log(chars(bytes, 0, 30)); // 1st string
 
                     console.log(chars(bytes, 32, 35)); // 2nd string
 
                     console.log(chars(bytes, 0, 70)); // we can also see 2 0ed bytes between the strings and after the 2nd one ends
+
+                    const readNullTerminatedString = (bytes, idx) => {
+                        let s = '';
+                        while (true) {
+                            const u8 = bytes[idx];
+                            if (u8 === 0) return s;
+                            const utf8Char = String.fromCharCode(u8);
+                            s += utf8Char;
+                            ++idx;
+                        }
+                    }
+
+                    console.log(readNullTerminatedString(bytes, 0)); // 1st string
+                    console.log(readNullTerminatedString(bytes, 32)); // 2nd string
                 }
             } else {
                 alert('expects the wasm file to be provided, followed by the arguments to pass to it');
