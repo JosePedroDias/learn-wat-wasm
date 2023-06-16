@@ -210,6 +210,31 @@ if (wasmFile === 'AddInt.wasm') {
         console.log(readNullTerminatedString(bytes, 0)); // 1st string
         console.log(readNullTerminatedString(bytes, 32)); // 2nd string
     }
+} else if (wasmFile === 'NumberString.wasm') {
+    {
+        const memory = new WebAssembly.Memory ({ initial: 1 });
+
+        const importObject = {
+            env: {
+                buffer: memory,
+                PrintString: (startStrIdx, strLen) => {
+                    const bytes = new Uint8Array(memory.buffer, startStrIdx, strLen);
+                    const strToLog = new TextDecoder('utf8').decode(bytes);
+                    console.log(strToLog);
+                }
+            }
+        };
+
+        const watBuf = await readFile('NumberString.wasm');
+        const obj = await WebAssembly.instantiate(watBuf, importObject);
+
+        const { to_string } =  obj.instance.exports;
+        const n = parseInt(args[0], 10);
+        if (isNaN(n)) {
+            throw new Error('needs 1 integer number passed in as a cli argument!');
+        }
+        to_string(n);
+    }
 } else {
     console.log('expects the wasm file to be provided, followed by the arguments to pass to it');
 }
