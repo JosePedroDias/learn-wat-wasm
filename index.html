@@ -350,7 +350,7 @@
                     const mem_i32 = new Uint32Array(mem.buffer);
 
                     const obj_base_addr = 0; // the address of the first byte of our data
-                    const obj_count = 32; // the number of structures
+                    const obj_count = 16; // the number of structures
                     const obj_stride = 16; // 16-byte stride
                 
                     // structure attribute offsets
@@ -382,12 +382,35 @@
                         }
                     };
 
+                    let drawCircle;    
+                    {
+                        const SCALE = 5;
+                        const el = document.createElement('canvas');
+                        el.setAttribute('width', SCALE * 100);
+                        el.setAttribute('height', SCALE * 400);
+                        document.body.appendChild(el);
+                        const ctx = el.getContext('2d');
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.lineWidth = 1 / SCALE;
+                        ctx.font = `${14/SCALE}px sans-serif`;
+                        ctx.scale(SCALE, SCALE);
+                        drawCircle = (x, y, r, i, color = 'black') => {
+                            ctx.fillStyle = color;
+                            ctx.strokeStyle = color;
+                            ctx.fillText(`${i}`, x, y);
+                            ctx.beginPath();
+                            ctx.arc(x, y, r, 0, 2 * Math.PI, false);
+                            ctx.stroke();
+                        }
+                    }
+
                     // populate structures
                     for (let i = 0; i < obj_count; ++i) {
                         const index = obj_i32_stride * i + obj_i32_base_index;
-                        const x = Math.floor( Math.random() * 100 );
-                        const y = Math.floor( Math.random() * 100 );
-                        const r = Math.ceil( Math.random() * 10 );
+                        const x = 10 + Math.floor(80 * Math.random());
+                        const y = 10 + Math.floor(80 * Math.random());
+                        const r = 3 + Math.floor(7 * Math.random());
                         mem_i32[index + x_offset_i32] = x; 
                         mem_i32[index + y_offset_i32] = y;
                         mem_i32[index + radius_offset_i32] = r;
@@ -402,12 +425,13 @@
                         const index = obj_i32_stride * i + obj_i32_base_index;
                         const x = mem_i32[index + x_offset_i32].toString().padStart(2, ' ');
                         const y = mem_i32[index + y_offset_i32].toString().padStart(2, ' ');
-                        const r = mem_i32[index + radius_offset_i32].toString().padStart(2,' ');
-                        const i_str = i.toString().padStart(2, '0');
+                        const r = mem_i32[index + radius_offset_i32].toString();
+                        const i_str = i.toString().padStart(2, ' ');
                         const c = !!mem_i32[index + collision_offset_i32];
 
-                        if (c) console.log(`%cobj[${i_str}] x=${x} y=${y} r=${r} collision=${c}`, 'color:red');
-                        else console.log(`%cobj[${i_str}] x=${x} y=${y} r=${r} collision=${c}`, 'color:green');
+                        if (c) console.log(`%cobj[${i_str}] x:${x} y:${y} r:${r} collision:${c}`, 'color:red');
+                        else console.log(`%cobj[${i_str}] x:${x} y:${y} r:${r} collision:${c}`, 'color:green');
+                        drawCircle(x, y, r, i, c ? 'red' : 'green');
                     }
                 }
             } else {

@@ -392,9 +392,9 @@ if (wasmFile === 'AddInt.wasm') {
         // populate structures
         for (let i = 0; i < obj_count; ++i) {
             const index = obj_i32_stride * i + obj_i32_base_index;
-            const x = Math.floor( Math.random() * 100 );
-            const y = Math.floor( Math.random() * 100 );
-            const r = Math.ceil( Math.random() * 10 );
+            const x = 10 + Math.floor(80 * Math.random());
+            const y = 10 + Math.floor(80 * Math.random());
+            const r = 3 + Math.floor(7 * Math.random());
             mem_i32[index + x_offset_i32] = x; 
             mem_i32[index + y_offset_i32] = y;
             mem_i32[index + radius_offset_i32] = r;
@@ -409,12 +409,12 @@ if (wasmFile === 'AddInt.wasm') {
             const index = obj_i32_stride * i + obj_i32_base_index;
             const x = mem_i32[index + x_offset_i32].toString().padStart(2, ' ');
             const y = mem_i32[index + y_offset_i32].toString().padStart(2, ' ');
-            const r = mem_i32[index + radius_offset_i32].toString().padStart(2,' ');
-            const i_str = i.toString().padStart(2, '0');
+            const r = mem_i32[index + radius_offset_i32].toString();
+            const i_str = i.toString().padStart(2, ' ');
             const c = !!mem_i32[index + collision_offset_i32];
 
-            if (c) console.log(chalk.red(`obj[${i_str}] x=${x} y=${y} r=${r} collision=${c}`));
-            else console.log(chalk.green(`obj[${i_str}] x=${x} y=${y} r=${r} collision=${c}`));
+            if (c) console.log(chalk.red(`obj[${i_str}] x:${x} y:${y} r:${r} collision:${c}`));
+            else console.log(chalk.green(`obj[${i_str}] x:${x} y:${y} r:${r} collision:${c}`));
         }
     }
 } else {
