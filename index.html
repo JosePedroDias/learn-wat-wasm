@@ -314,6 +314,36 @@
                         }
                     }
                 }
+            } else if (wasmFile === 'StoreData.wasm') {
+                {
+                    const mem = new WebAssembly.Memory ({ initial: 1 });
+
+                    const data_addr = 32; // the address of the first byte of our data        
+                    const data_count = 16; // the number of 32-bit integers to set
+
+                    const importObject = {
+                        env: {
+                            mem,
+                            data_addr,
+                            data_count,
+                        }
+                    };
+
+                    const mem_i32 = new Uint32Array(mem.buffer);
+                    const data_i32_index = data_addr / 4; // The 32-bit index of the beginning of our data
+
+                    const watProm = fetch("StoreData.wasm");
+                    const obj = await WebAssembly.instantiateStreaming(watProm, importObject);
+
+                    for (let i = 0; i < data_i32_index + data_count + 4; ++i) {
+                        let data = mem_i32[i];
+                        if (data !== 0) {
+                            console.log(`%cdata[${i}]=${data}`, 'color:red');
+                        } else {
+                            console.log(`data[${i}]=${data}`);
+                        }
+                    }
+                }
             } else {
                 alert('expects the wasm file to be provided, followed by the arguments to pass to it');
             }

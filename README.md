@@ -78,6 +78,9 @@ The examples section below should make this clearer.
 - **TicTacToe** (original code) - simple tic tac toe implemented in a 9 chars memory. input via prompt/readline, output via console.logs
     http://localhost:8080/?TicTacToe.wasm  
     `node index.mjs TicTacToe.wasm`
+- **StoreData** (p. 189) - basic reading of memory set in wasm
+    http://localhost:8080/?StoreData.wasm  
+    `node index.mjs StoreData.wasm`
 
 ## reference
 

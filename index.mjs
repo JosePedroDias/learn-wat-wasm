@@ -4,6 +4,7 @@
 
 import { readFile } from 'node:fs/promises';
 import { createInterface } from 'node:readline';
+import chalk from 'chalk';
 
 const getInput = (prompt) => new Promise((resolve) => {
     const rl = createInterface({
@@ -317,6 +318,36 @@ if (wasmFile === 'AddInt.wasm') {
             if (isBoardFull()) {
                 console.log(`Game was tied!`);
                 break;
+            }
+        }
+    }
+} else if (wasmFile === 'StoreData.wasm') {
+    {
+        const mem = new WebAssembly.Memory ({ initial: 1 });
+
+        const data_addr = 32; // the address of the first byte of our data        
+        const data_count = 16; // the number of 32-bit integers to set
+
+        const importObject = {
+            env: {
+                mem,
+                data_addr,
+                data_count,
+            }
+        };
+
+        const mem_i32 = new Uint32Array(mem.buffer);
+        const data_i32_index = data_addr / 4; // The 32-bit index of the beginning of our data
+
+        const watBuf = await readFile('StoreData.wasm');
+        const obj = await WebAssembly.instantiate(watBuf, importObject);
+
+        for (let i = 0; i < data_i32_index + data_count + 4; ++i) {
+            let data = mem_i32[i];
+            if (data !== 0) {
+                console.log(chalk.red(`data[${i}]=${data}`));
+            } else {
+                console.log(`data[${i}]=${data}`);
             }
         }
     }
