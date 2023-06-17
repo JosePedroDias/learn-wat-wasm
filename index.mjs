@@ -3,6 +3,20 @@
 /* eslint-env node */
 
 import { readFile } from 'node:fs/promises';
+import { createInterface } from 'node:readline';
+
+const getInput = (prompt) => new Promise((resolve) => {
+    const rl = createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+    rl.question(prompt, (out) => {
+        rl.close();
+        resolve(out);
+    });
+});
+
+const charCodeToChar = (charCode) => String.fromCharCode(charCode);
 
 // gets args via cli arguments
 const [_, __, ...args] = process.argv;
@@ -234,6 +248,77 @@ if (wasmFile === 'AddInt.wasm') {
             throw new Error('needs 1 integer number passed in as a cli argument!');
         }
         to_string(n);
+    }
+} else if (wasmFile === 'TicTacToe.wasm') {
+    {
+        const memory = new WebAssembly.Memory ({ initial: 1 });
+
+        const importObject = {
+            env: {
+                buffer: memory,
+                PrintChar: (charCode) => {
+                    console.log(String.fromCharCode(charCode));
+                },
+                PrintString3x3: (startStrIdx, strLen) => {
+                    const bytes = new Uint8Array(memory.buffer, startStrIdx, strLen);
+                    const strToLog = new TextDecoder('utf8').decode(bytes);
+                    const lines = strToLog.split('').reduce((prev, curr, i) => {
+                        let line;
+                        if (i % 3 === 0) {
+                            line = [];
+                            prev.push(line);
+                        }
+                        else {
+                            line = prev[prev.length - 1];
+                        }
+                        line.push(curr);
+                        return prev;
+                    }, []);
+                    console.log(lines.map(line => line.join('')).join('\n'));
+                }
+            }
+        };
+
+        const watBuf = await readFile('TicTacToe.wasm');
+        const obj = await WebAssembly.instantiate(watBuf, importObject);
+
+        const {
+            setCharAt, isValidSet, printBoard, hasWon, isBoardFull, nextCharToPlay, getMoveNumber,
+        } =  obj.instance.exports;
+        
+        while (true) {
+            const currChar = nextCharToPlay();
+            const moveNr = getMoveNumber();
+
+            console.log(`\nmove #${moveNr}`);
+
+            console.log('\nboard:');
+            printBoard();
+
+            console.log(`\nnext to play: ${charCodeToChar(currChar)}`);
+
+            let x, y;
+            while (true) {
+                x = parseInt(await getInput('x: '), 10);
+                y = parseInt(await getInput('y: '), 10);
+                console.log(x, y);
+
+                if (isValidSet(x, y, currChar)) break;
+                console.warn('incorrect move!');
+            }
+            
+            setCharAt(x, y, currChar);
+
+            if (hasWon(currChar)) {
+                console.log(`${charCodeToChar(currChar)} has won!`);
+                break;
+            }
+
+            if (isBoardFull()) {
+                console.log(`Game was tied!`);
+                break;
+            }
+        }
     }
 } else {
     console.log('expects the wasm file to be provided, followed by the arguments to pass to it');

@@ -75,6 +75,9 @@ The examples section below should make this clearer.
 - **NumberString** (p. 173) - converts unsigned i32 to a string - both decimal, hex and binary versions
     http://localhost:8080/?NumberString.wasm,231  
     `node index.mjs NumberString.wasm 231`
+- **TicTacToe** (original code) - simple tic tac toe implemented in a 9 chars memory. input via prompt/readline, output via console.logs
+    http://localhost:8080/?TicTacToe.wasm  
+    `node index.mjs TicTacToe.wasm`
 
 ## reference
 
