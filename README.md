@@ -81,6 +81,9 @@ The examples section below should make this clearer.
 - **StoreData** (p. 189) - basic reading of memory set in wasm
     http://localhost:8080/?StoreData.wasm  
     `node index.mjs StoreData.wasm`
+- **DataStructures** (p. 206) - collision detection in wasm. i/o via stared memory btw js/wasm, filled and inspected in js
+    http://localhost:8080/?DataStructures.wasm  
+    `node index.mjs DataStructures.wasm`
 
 ## reference
 
