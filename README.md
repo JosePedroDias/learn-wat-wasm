@@ -84,6 +84,8 @@ The examples section below should make this clearer.
 - **DataStructures** (p. 206) - collision detection in wasm. i/o via stared memory btw js/wasm, filled and inspected in js
     http://localhost:8080/?DataStructures.wasm  
     `node index.mjs DataStructures.wasm`
+- **Webcam** (original code) - webcam > canvas > wasm pixel filter > canvas rendering
+    http://localhost:8080/webcam.html
 
 ## reference
 
@@ -93,6 +95,7 @@ The examples section below should make this clearer.
 - https://developer.mozilla.org/en-US/docs/WebAssembly/Understanding_the_text_format
 - https://webassembly.github.io/spec/core/text/index.html
 - https://wasmbook.com/ https://github.com/battlelinegames/ArtOfWasm
+- https://simon.html5.org/dump/html5-canvas-cheat-sheet.html
 - [wasi in nodejs](https://nodejs.org/api/wasi.html)
 
 
@@ -306,3 +309,22 @@ https://musteresel.github.io/posts/2020/01/webassembly-text-br_table-example.htm
 
 - https://wasmbook.com/calculator.html
 - https://wasmbook.com/binary_float.html
+
+### hex binary bits
+
+0 0000
+1 0001
+2 0010
+3 0011
+4 0100
+5 0101
+6 0110
+7 0111
+8 1000
+9 1001
+A 1010
+B 1011
+C 1100
+D 1101
+E 1110
+F 1111

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
+        <style>
+            video { border: 1px solid purple; display: none; }
+            canvas { border: 1px solid red; }
+        </style>
+    </head>
+    <body>
+        <video autoplay playsinline></video>
+        <canvas></canvas>
+        <script>
+            const videoEl = document.querySelector("video");
+            const hiddenCanvasEl = document.createElement('canvas');
+            const canvasEl = document.querySelector("canvas");
+
+            const SCALE = 1;
+            // scale | number of memory blocks required
+            // 1/8 -> 1;
+            // 1/4 -> 2;
+            // 1/2 -> 5;
+            // 1/1 -> 19
+
+            navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+            .then(async (stream) => {
+                videoEl.srcObject = stream;
+                const track = stream.getTracks()[0];
+                const settings = track.getSettings();
+                const { width, height } = settings;
+                console.log(`webcam stream dims: ${width}x${height}`);
+
+                const width2 = width * SCALE;
+                const height2 = height * SCALE;
+                const numBytes = 4 * width2 * height2;
+                console.log(`scaled stream dims: ${width2}x${height2}`, 'bytes:', numBytes, 'num memory blocks:', numBytes / 65536);
+
+                hiddenCanvasEl.setAttribute('width', width2);
+                hiddenCanvasEl.setAttribute('height', height2);
+                
+                canvasEl.setAttribute('width', width2);
+                canvasEl.setAttribute('height', height2);
+
+                const ctx0 = hiddenCanvasEl.getContext('2d', { willReadFrequently: true });
+                const ctx1 = canvasEl.getContext('2d', { willReadFrequently: true });
+
+                let memory;
+                let memI8;
+                let processFrame;
+
+                const onTick = () => {
+                    window.requestAnimationFrame(onTick);
+                    
+                    ctx0.drawImage(videoEl, 0, 0, width2, height2); // scale down webcam
+
+                    const imageData = ctx0.getImageData(0, 0, width2, height2);
+                    
+                    for (let i = 0; i < numBytes; ++i) memI8[i] = imageData.data[i];
+
+                    processFrame();
+
+                    for (let i = 0; i < numBytes; ++i) imageData.data[i] = memI8[i];
+
+                    ctx1.putImageData(imageData, 0, 0);
+                };
+
+                videoEl.addEventListener('play', async () => {
+                    memory = new WebAssembly.Memory ({ initial: 19 });
+                    memI8 = new Uint8Array(memory.buffer);
+
+                    const importObject = {
+                        env: {
+                            frame: memory,
+                            width: width2,
+                            height: height2,
+                        }
+                    };
+
+                    const watProm = fetch("Webcam.wasm");
+                    const obj = await WebAssembly.instantiateStreaming(watProm, importObject);
+                    processFrame = obj.instance.exports.processFrame;
+                    
+                    onTick();
+                });
+            });
+        </script>
+    </body>
+</html>
